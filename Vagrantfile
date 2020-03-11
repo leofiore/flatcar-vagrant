@@ -1,9 +1,9 @@
-# -*- mode: ruby -*-
-# # vi: set ft=ruby :
+ENV["TERM"] = "xterm-256color"
+ENV["LC_ALL"] = "en_US.UTF-8"
 
 require 'fileutils'
 
-Vagrant.require_version ">= 1.6.0"
+Vagrant.require_version '>= 2.0.4'
 
 # Make sure the vagrant-ignition plugin is installed
 required_plugins = %w(vagrant-ignition)
@@ -58,18 +58,19 @@ def vm_cpus
   $vb_cpus.nil? ? $vm_cpus : $vb_cpus
 end
 
-Vagrant.configure("2") do |config|
-  # always use Vagrants insecure key
-  config.ssh.insert_key = false
-  # forward ssh agent to easily ssh into the different machines
-  config.ssh.forward_agent = true
 
-  config.vm.box = "coreos-#{$update_channel}"
-  config.vm.box_url = "https://#{$update_channel}.release.core-os.net/amd64-usr/current/coreos_production_vagrant_virtualbox.json"
+Vagrant.configure('2') do |config|
+  config.ssh.username = 'core'
+  config.ssh.insert_key = true
+  config.vm.synced_folder '.', '/vagrant', disabled: true
+
+
+  config.vm.box = "flatcar-#{$update_channel}"
+  config.vm.box_url = "https://#{$update_channel}.release.flatcar-linux.net/amd64-usr/current/flatcar_production_vagrant_virtualbox.json"
 
   ["vmware_fusion", "vmware_workstation"].each do |vmware|
     config.vm.provider vmware do |v, override|
-      override.vm.box_url = "https://#{$update_channel}.release.core-os.net/amd64-usr/current/coreos_production_vagrant_vmware_fusion.json"
+      override.vm.box_url = "https://#{$update_channel}.release.flatcar-linux.net/amd64-usr/current/flatcar_production_vagrant_vmware_fusion.json"
     end
   end
 
@@ -80,12 +81,15 @@ Vagrant.configure("2") do |config|
     v.functional_vboxsf     = false
     # enable ignition (this is always done on virtualbox as this is how the ssh key is added to the system)
     config.ignition.enabled = true
+    v.cpus = 2
+    v.memory = 2048
   end
 
   # plugin conflict
   if Vagrant.has_plugin?("vagrant-vbguest") then
     config.vbguest.auto_update = false
   end
+
 
   (1..$num_instances).each do |i|
     config.vm.define vm_name = "%s-%02d" % [$instance_name_prefix, i] do |config|
@@ -170,4 +174,6 @@ Vagrant.configure("2") do |config|
       end
     end
   end
+
+
 end

@@ -1,25 +1,23 @@
-# CoreOS Vagrant
+# Flatcar Vagrant
 
-This repo provides a template Vagrantfile to create a CoreOS virtual machine using the VirtualBox software hypervisor.
-After setup is complete you will have a single CoreOS virtual machine running on your local machine.
+This repo provides a template Vagrantfile to create a Flatcar virtual machine using the VirtualBox software hypervisor.
 
-## Contact
-IRC: #coreos on freenode.org
+This is a fork of the original CoreOS Vagrant repository, please refer to the original documentation when in doubt.
 
-Mailing list: [coreos-dev](https://groups.google.com/forum/#!forum/coreos-dev)
+After setup is complete you will have a single Flatcar virtual machine running on your local machine.
 
 ## Streamlined setup
 
 1) Install dependencies
 
 * [VirtualBox][virtualbox] 4.3.10 or greater.
-* [Vagrant][vagrant] 1.6.3 or greater.
+* [Vagrant][vagrant] 2.0.4 or greater.
 
 2) Clone this project and get it running!
 
 ```
-git clone https://github.com/coreos/coreos-vagrant/
-cd coreos-vagrant
+git clone https://github.com/leofiore/flatcar-vagrant/
+cd flatcar-vagrant
 ```
 
 3) Startup and SSH
@@ -53,16 +51,16 @@ vagrant up --provider vmware_workstation
 vagrant ssh
 ```
 
-``vagrant up`` triggers vagrant to download the CoreOS image (if necessary) and (re)launch the instance
+``vagrant up`` triggers vagrant to download the Flatcar image (if necessary) and (re)launch the instance
 
 ``vagrant ssh`` connects you to the virtual machine.
 Configuration is stored in the directory so you can always return to this machine by executing vagrant ssh from the directory where the Vagrantfile was located.
 
-4) Get started [using CoreOS][using-coreos]
+4) Get started [using Flatcar][using-flatcar]
 
 [virtualbox]: https://www.virtualbox.org/
 [vagrant]: https://www.vagrantup.com/downloads.html
-[using-coreos]: http://coreos.com/docs/using-coreos/
+[using-flatcar]: https://docs.flatcar-linux.org/
 
 #### Shared Folder Setup
 
@@ -95,7 +93,7 @@ to learn about the available features.
 
 #### Provisioning with user-data (VMWare provider)
 
-When using the VMWare provider for Vagrant, the Vagrantfile will provision your CoreOS VM(s)
+When using the VMWare provider for Vagrant, the Vagrantfile will provision your Flatcar VM(s)
 with [coreos-cloudinit][coreos-cloudinit] if a `user-data` file is found in the project directory. coreos-cloudinit simplifies the
 provisioning process through the use of a script or cloud-config document.
 
@@ -106,20 +104,20 @@ Check out the [coreos-cloudinit documentation][coreos-cloudinit] to learn about 
 
 #### Configuration
 
-The Vagrantfile will parse a `config.rb` file containing a set of options used to configure your CoreOS cluster.
+The Vagrantfile will parse a `config.rb` file containing a set of options used to configure your Flatcar cluster.
 See `config.rb.sample` for more information.
 
 ## Cluster Setup
 
-Launching a CoreOS cluster on Vagrant is as simple as configuring `$num_instances` in a `config.rb` file to 3 (or more!) and running `vagrant up`.
+Launching a Flatcar cluster on Vagrant is as simple as configuring `$num_instances` in a `config.rb` file to 3 (or more!) and running `vagrant up`.
 If using the VirtualBox provider (default), copy the make sure to create a `config.ign` as described above so that the machines can be configured with
 etcd and flanneld correctly. Also, make sure to provide a fresh discovery URL in your `config.ign` file to bootstrap etcd in your cluster.
 If you are using the VMWare provider, make sure you provide a fresh discovery URL in your `user-data` if you wish to bootstrap etcd in your cluster.
 
 ## New Box Versions
 
-CoreOS is a rolling release distribution and versions that are out of date will automatically update.
-If you want to start from the most up to date version you will need to make sure that you have the latest box file of CoreOS. You can do this by running
+Flatcar is a rolling release distribution and versions that are out of date will automatically update.
+If you want to start from the most up to date version you will need to make sure that you have the latest box file of Flatcar. You can do this by running
 ```
 vagrant box update
 ```
@@ -128,10 +126,10 @@ vagrant box update
 ## Docker Forwarding
 
 By setting the `$expose_docker_tcp` configuration value you can forward a local TCP port to docker on
-each CoreOS machine that you launch. The first machine will be available on the port that you specify
+each Flatcar machine that you launch. The first machine will be available on the port that you specify
 and each additional machine will increment the port by 1.
 
-Follow the [Enable Remote API instructions][coreos-enabling-port-forwarding] to get the CoreOS VM setup to work with port forwarding.
+Follow the [Enable Remote API instructions][coreos-enabling-port-forwarding] to get the Flatcar VM setup to work with port forwarding.
 
 [coreos-enabling-port-forwarding]: https://coreos.com/docs/launching-containers/building/customizing-docker/#enable-the-remote-api-on-a-new-socket
 
@@ -140,6 +138,6 @@ Then you can then use the `docker` command from your local shell by setting `DOC
     export DOCKER_HOST=tcp://localhost:2375
 
 ## Troubleshooting
-If vagrant fails to run successfully, first make sure that the latest version of the coreos-vagrant project has been downloaded, then run
+If vagrant fails to run successfully, first make sure that the latest version of the flatcar-vagrant project has been downloaded, then run
 `vagrant destroy -f` to remove old machines, `vagrant box update` to update the OS box, and `vagrant plugin update vagrant-ignition` to
-update the ignition plugin. If the problems persist after that, please report bugs at https://issues.coreos.com.
+update the ignition plugin. 
